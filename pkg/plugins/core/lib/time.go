@@ -24,7 +24,7 @@ func GetNowDateTime(runtime *js.Runtime, formatStr string) js.Value {
 }
 
 func init() {
-	require.RegisterNativeModule("time", func(runtime *js.Runtime, module *js.Object) {
+	require.RegisterNativeModule("std/time", func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 		// 睡眠
 		o.Set("sleep", func(call js.FunctionCall) js.Value {

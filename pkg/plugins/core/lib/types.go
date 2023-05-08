@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	require.RegisterNativeModule("types", func(runtime *js.Runtime, module *js.Object) {
+	require.RegisterNativeModule("std/types", func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 
 		o.Set("newInt", func(call js.FunctionCall) js.Value {

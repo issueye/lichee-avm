@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	require.RegisterNativeModule("fmt", func(runtime *js.Runtime, module *js.Object) {
+	require.RegisterNativeModule("std/fmt", func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 		o.Set("sprintf", func(call js.FunctionCall) js.Value {
 			format := call.Argument(0).String()

@@ -79,7 +79,7 @@ func NewIni(runtime *js.Runtime, cfg *ini.File, path string) js.Value {
 }
 
 func init() {
-	require.RegisterNativeModule("ini", func(runtime *js.Runtime, module *js.Object) {
+	require.RegisterNativeModule("std/ini", func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 		o.Set("create", func(call js.FunctionCall) js.Value {
 			path := call.Argument(0).String()
