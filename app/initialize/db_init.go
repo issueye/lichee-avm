@@ -11,7 +11,6 @@ import (
 	"github.com/issueye/lichee/pkg/db"
 	licheeDB "github.com/issueye/lichee/pkg/plugins/core/db"
 	"github.com/issueye/lichee/utils"
-	"go.etcd.io/bbolt"
 )
 
 func InitDB() {
@@ -53,96 +52,49 @@ func InitDB() {
 	fmt.Printf("【%s】初始化数据库完成...\n", utils.Ltime{}.GetNowStr())
 }
 
-func InitBoltDb() {
-	CreateBucket(common.JOB_BUCKET, "定时任务")       // JOB_BUCKET
-	CreateBucket(common.USER_BUCKET, "用户")        // USER_BUCKET
-	CreateBucket(common.AREA_BUCKET, "参数域")       // AREA_BUCKET
-	CreateBucket(common.DB_SOURCE_BUCKET, "数据库源") // DB_SOURCE_BUCKET
-
-	fmt.Printf("【%s】初始化BUCKET完成...\n", utils.Ltime{}.GetNowStr())
-}
-
-func CreateBucket(name []byte, describe string) {
-	err := global.Bdb.Update(func(tx *bbolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(name)
-		return err
-	})
+func InitLocalDb() {
+	var err error
+	common.LocalDb, err = db.InitSqlite(&db.Config{
+		Path:    "data.db",
+		LogMode: true,
+	}, common.Log)
 	if err != nil {
-		panic(fmt.Sprintf("创建[%s]->BUCKET 失败，失败原因：%s", describe, err.Error()))
+		fmt.Printf("初始化本地数据库失败，失败原因：%s", err.Error())
+		return
 	}
+
+	// 自定检查、生成表
+	common.LocalDb.AutoMigrate(
+		&model.Job{},
+		&model.Param{},
+		&model.ParamArea{},
+		&model.DbSource{},
+		&model.User{},
+	)
+	fmt.Printf("【%s】初始化库表完成...\n", utils.Ltime{}.GetNowStr())
 }
 
 func InitAdminUser() {
-	isHave := false
-	_ = global.Bdb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.USER_BUCKET)
-		data := b.Get(common.UserID(10000))
-		if len(data) > 0 {
-			isHave = true
-		}
-
-		return nil
-	})
-
-	if !isHave {
-		global.Bdb.Update(func(tx *bbolt.Tx) error {
-			b := tx.Bucket(common.USER_BUCKET)
-			user := &model.User{
-				Id:         10000,
-				Account:    "admin",
-				Name:       "管理员",
-				Password:   "",
-				Mark:       "系统生成的管理员账号",
-				Enable:     1,
-				CreateTime: time.Now(),
-			}
-			data, err := utils.GobBuff{}.StructToBytes(user)
-			if err != nil {
-				return err
-			}
-			return b.Put(common.UserID(10000), data)
-		})
+	u, err := service.NewUserService().GetById(10000)
+	if err != nil {
+		fmt.Printf("获取管理员信息失败，失败原因:%s\n", err.Error())
+		return
 	}
-}
 
-func InitSysBucket() {
-	// 查询是否存在系统参数域
-	isHave := false
-	global.Bdb.View(func(tx *bbolt.Tx) error {
-		bucket := tx.Bucket(common.AREA_BUCKET)
-		b := bucket.Get(common.AreaID(10000))
-		if len(b) > 0 {
-			isHave = true
-		}
-
-		return nil
-	})
-
-	if !isHave {
-		err := global.Bdb.Update(func(tx *bbolt.Tx) error {
-			bucket := tx.Bucket(common.AREA_BUCKET)
-			data := new(model.ParamArea)
-			data.Id = 10000
-			data.Name = common.SYS_AREA_NAME
-			data.Mark = "系统配置的参数域"
-
-			bufferData, err := utils.GobBuff{}.StructToBytes(data)
-			if err != nil {
-				return err
-			}
-
-			err = bucket.Put(common.AreaID(data.Id), bufferData)
-			if err != nil {
-				return err
-
-			}
-
-			_, err = bucket.CreateBucketIfNotExists(common.AreaBucketID(10000))
-			return err
+	if u.Id == 0 {
+		err = service.NewUserService().Create(&model.User{
+			Id:         10000,
+			Account:    "admin",
+			Name:       "管理员",
+			Password:   "",
+			Mark:       "系统生成的管理员账号",
+			Enable:     1,
+			CreateTime: time.Now(),
 		})
 
 		if err != nil {
-			panic(fmt.Errorf("创建系统参数BUCKET失败，失败原因：%s", err.Error()))
+			fmt.Printf("生成管理员信息失败，失败原因：%s\n", err.Error())
+			return
 		}
 	}
 }

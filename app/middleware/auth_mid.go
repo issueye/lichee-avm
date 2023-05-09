@@ -56,6 +56,7 @@ func (auth *Auth) IdentityHandler(c *gin.Context) interface{} {
 }
 
 // Login godoc
+//
 //	@tags			基本接口
 //	@Summary		用户登录
 //	@Produce		json
@@ -85,7 +86,7 @@ func (auth *Auth) Login(c *gin.Context) (interface{}, error) {
 
 	// 修改用户登录时间
 	user.LoginTime = time.Now()
-	err = service.NewUserService().Save(user)
+	err = service.NewUserService().Modify(user)
 	if err != nil {
 		return nil, err
 	}
@@ -149,6 +150,7 @@ func (auth *Auth) LoginResponse(ctx *gin.Context, _ int, token string, expires t
 }
 
 // LogoutResponse godoc
+//
 //	@tags			基本接口
 //	@Summary		用户登出
 //	@Description	用户登出时，调用此接口
@@ -163,6 +165,7 @@ func (auth *Auth) LogoutResponse(ctx *gin.Context, _ int) {
 }
 
 // RefreshResponse godoc
+//
 //	@tags			基本接口
 //	@Summary		刷新token
 //	@Description	当token即将获取或者过期时刷新token

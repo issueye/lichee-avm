@@ -8,9 +8,7 @@ import (
 	"github.com/issueye/lichee/app/service"
 	"github.com/issueye/lichee/global"
 	"github.com/issueye/lichee/pkg/plugins/core"
-	"github.com/issueye/lichee/utils"
 	"github.com/spf13/cast"
-	"go.etcd.io/bbolt"
 )
 
 type TaskJob struct {
@@ -47,29 +45,23 @@ func (t TaskJob) Run() {
 func regParam(id int64, vm *core.Core) error {
 	pa, err := service.NewParamService().GetAreaById(id)
 	if err != nil {
-		common.Log.Errorf("根据编码【%d】未找到参数域信息", id)
+		common.Log.Errorf("查询参数域失败，失败原因：%s", err.Error())
 		return err
 	}
 
-	// 注入参数域的参数
-	global.Bdb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.AREA_BUCKET)
-		paramBucket := b.Bucket(common.AreaBucketID(pa.Id))
-		err := paramBucket.ForEach(func(k, v []byte) error {
-			if len(v) > 0 {
-				data := new(model.Param)
-				err := utils.GobBuff{}.BytesToStruct(v, data)
-				if err != nil {
-					return err
-				}
-
-				vm.SetProperty(pa.Name, data.Name, data.Value)
-			}
-
-			return nil
-		})
+	// 根据参数域查询参数
+	req := new(model.ReqQueryParam)
+	req.AreaId = id
+	list, err := service.NewParamService().Query(req)
+	if err != nil {
+		common.Log.Errorf("注册参数到JS虚拟机中失败，失败原因：%s", err.Error())
 		return err
-	})
+	}
+
+	// 注入参数
+	for _, p := range list {
+		vm.SetProperty(pa.Name, p.Name, p.Value)
+	}
 
 	return nil
 }

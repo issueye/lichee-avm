@@ -20,6 +20,7 @@ func NewUserController() *UserController {
 }
 
 // Create doc
+//
 //	@tags			用户管理
 //	@Summary		添加用户
 //	@Description	添加用户
@@ -46,7 +47,7 @@ func (user *UserController) Create(ctx *gin.Context) {
 	data.Mark = req.Mark
 	data.CreateTime = time.Now()
 
-	err = service.NewUserService().Save(data)
+	err = service.NewUserService().Create(data)
 	if err != nil {
 		common.Log.Errorf("创建用户信息失败，失败原因：%s", err.Error())
 		res.FailByMsg(ctx, "创建用户信息失败")
@@ -57,6 +58,7 @@ func (user *UserController) Create(ctx *gin.Context) {
 }
 
 // List doc
+//
 //	@tags			用户管理
 //	@Summary		获取用户列表
 //	@Description	获取用户列表
@@ -92,6 +94,7 @@ func (user *UserController) List(ctx *gin.Context) {
 }
 
 // Del doc
+//
 //	@tags			用户管理
 //	@Summary		删除用户
 //	@Description	删除用户
@@ -120,6 +123,7 @@ func (user *UserController) Del(ctx *gin.Context) {
 }
 
 // Modify doc
+//
 //	@tags			用户管理
 //	@Summary		修改用户信息
 //	@Description	修改用户信息
@@ -151,7 +155,7 @@ func (user *UserController) Modify(ctx *gin.Context) {
 	u.Password = req.Password
 
 	// 保存定时任务信息
-	err = service.NewUserService().Save(u)
+	err = service.NewUserService().Modify(u)
 	if err != nil {
 		common.Log.Errorf("修改用户信息失败，失败原因：%s", err.Error())
 		res.FailByMsg(ctx, "修改用户信息失败")
@@ -162,6 +166,7 @@ func (user *UserController) Modify(ctx *gin.Context) {
 }
 
 // ModifyStatus doc
+//
 //	@tags			用户管理
 //	@Summary		停用/启用用户
 //	@Description	停用/启用用户
@@ -194,7 +199,7 @@ func (user *UserController) ModifyStatus(ctx *gin.Context) {
 	}
 
 	// 保存用户信息
-	err = service.NewUserService().Save(u)
+	err = service.NewUserService().Modify(u)
 	if err != nil {
 		common.Log.Errorf("修改用户信息失败，失败原因：%s", err.Error())
 		res.FailByMsg(ctx, "修改用户信息失败")

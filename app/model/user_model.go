@@ -13,6 +13,10 @@ type User struct {
 	CreateTime time.Time `json:"create_time" gorm:"column:create_time;type:varchar(100);comment:创建时间"` // 创建时间
 }
 
+func (User) TableName() string {
+	return "user"
+}
+
 type ReqCreateUser struct {
 	Account  string `json:"account"`  // 登录名
 	Name     string `json:"name"`     // 用户名

@@ -1,16 +1,11 @@
 package config
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/app/service"
-	"github.com/issueye/lichee/global"
 	"github.com/issueye/lichee/utils"
 	"github.com/spf13/cast"
-	"go.etcd.io/bbolt"
 )
 
 type Result struct {
@@ -47,31 +42,20 @@ func (r *Result) Bool() bool {
 // 获取参数
 func GetSysParam(name string) *Result {
 	r := new(Result)
-	global.Bdb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.AREA_BUCKET)
-		sysParamBucket := b.Bucket(common.AreaBucketID(common.SYS_AREA))
+	data := new(model.Param)
+	err := common.LocalDb.Model(&model.Param{}).Where("name = ?", name).Find(data).Error
+	if err != nil {
+		r.areaId = 0
+		r.mark = ""
+		r.name = ""
+		r.value = ""
+		return r
+	}
 
-		err := sysParamBucket.ForEach(func(k, v []byte) error {
-			data := new(model.Param)
-			err := utils.GobBuff{}.BytesToStruct(v, data)
-			if err != nil {
-				return err
-			}
-
-			// 判断是否等于
-			if strings.EqualFold(name, data.Name) {
-				r.name = data.Name
-				r.value = data.Value
-				r.mark = data.Mark
-				r.areaId = data.AreaId
-			}
-
-			return nil
-		})
-
-		return err
-	})
-
+	r.name = data.Name
+	r.value = data.Value
+	r.areaId = data.AreaId
+	r.mark = data.Mark
 	return r
 }
 
@@ -85,42 +69,4 @@ func SetSysParam(name, value, mark string) error {
 	data.AreaId = common.SYS_AREA
 	data.Area = common.SYS_AREA_NAME
 	return service.NewParamService().Save(data)
-}
-
-// 判断如果没有则添加
-func IsNotExitSetSysParam(name, value, mark string) {
-	var isHave bool
-	err := global.Bdb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.AREA_BUCKET)
-		sysParamBucket := b.Bucket(common.AreaBucketID(common.SYS_AREA))
-
-		err := sysParamBucket.ForEach(func(k, v []byte) error {
-			data := new(model.Param)
-			err := utils.GobBuff{}.BytesToStruct(v, data)
-			if err != nil {
-				return err
-			}
-			if strings.EqualFold(name, data.Name) {
-				isHave = true
-			}
-
-			return nil
-		})
-
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		fmt.Printf("【%s】参数出现异常\n", name)
-	}
-	if !isHave {
-		err := SetSysParam(name, value, mark)
-		if err != nil {
-			fmt.Printf("【%s】参数写入失败，失败原因：%s", name, err.Error())
-		}
-	}
 }

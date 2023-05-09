@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -80,30 +79,6 @@ func JobGo(j model.Job, t JOB_TYPE) {
 		},
 		Type: t,
 	}
-}
-
-func JobID(id int64) []byte {
-	return []byte(fmt.Sprintf("JOB:ID:%d", id))
-}
-
-func DbSourceID(id int64) []byte {
-	return []byte(fmt.Sprintf("DB:SOURCE:ID:%d", id))
-}
-
-func UserID(id int64) []byte {
-	return []byte(fmt.Sprintf("USER:ID:%d", id))
-}
-
-func AreaID(id int64) []byte {
-	return []byte(fmt.Sprintf("AREA:ID:%d", id))
-}
-
-func AreaBucketID(id int64) []byte {
-	return []byte(fmt.Sprintf("AREA:BUCKET:ID:%d", id))
-}
-
-func ParamID(id int64) []byte {
-	return []byte(fmt.Sprintf("AREA:PARAM:ID:%d", id))
 }
 
 // GetInitCore

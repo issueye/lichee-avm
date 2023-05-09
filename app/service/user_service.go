@@ -16,79 +16,32 @@ func NewUserService() *UserService {
 
 // Save
 // 写入数据
-func (user UserService) Save(data *model.User) error {
-	return global.Bdb.Update(func(tx *bbolt.Tx) error {
-		// 创建 bucket
-		b := tx.Bucket(common.USER_BUCKET)
+func (user UserService) Create(data *model.User) error {
+	return common.LocalDb.Create(data).Error
+}
 
-		// 将数据转换为字节切片
-		byteData, err := utils.GobBuff{}.StructToBytes(data)
-		if err != nil {
-			return err
-		}
-
-		// 存入数据
-		err = b.Put(common.UserID(data.Id), byteData)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
+// 修改用户信息
+func (user UserService) Modify(data *model.User) error {
+	return common.LocalDb.Model(&model.User{}).Where("id = ?", data.Id).Updates(data).Error
 }
 
 func (user UserService) FindUser(lu *model.LoginUser) (*model.User, error) {
 	data := new(model.User)
-	err := global.Bdb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.USER_BUCKET)
-		err := b.ForEach(func(k, v []byte) error {
-			tmpData := new(model.User)
-			err := utils.GobBuff{}.BytesToStruct(v, tmpData)
-			if err != nil {
-				common.Log.Errorf("将字节转换为对象失败，失败原因：%s", err.Error())
-				return err
-			}
-
-			// 判断账号和密码相等的用户
-			if tmpData.Account == lu.Account {
-				data = tmpData
-			}
-			return nil
-		})
-
-		return err
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	err := common.LocalDb.Model(&model.User{}).Where("account = ?", lu.Account).Find(data).Error
+	return data, err
 }
 
 // Delete
 // 写入数据
 func (user UserService) Del(id int64) error {
-	return global.Bdb.Update(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.USER_BUCKET)
-		return b.Delete(common.UserID(id))
-	})
+	return common.LocalDb.Where("id = ?", id).Delete(&model.User{}).Error
 }
 
 // Delete
 // 写入数据
 func (user UserService) GetById(id int64) (*model.User, error) {
 	data := new(model.User)
-	err := global.Bdb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.USER_BUCKET)
-		byteData := b.Get(common.UserID(id))
-		err := utils.GobBuff{}.BytesToStruct(byteData, data)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-
+	err := common.LocalDb.Model(data).Where("id = ?", id).Find(data).Error
 	return data, err
 }
 

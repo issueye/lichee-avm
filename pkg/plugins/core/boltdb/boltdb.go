@@ -1,8 +1,6 @@
 package boltdb
 
 import (
-	"log"
-
 	js "github.com/dop251/goja"
 	"github.com/dop251/goja_nodejs/require"
 	"github.com/issueye/lichee/pkg/plugins/core/lib"
@@ -16,15 +14,6 @@ var (
 type CallBackFunc = func(js.FunctionCall) js.Value
 
 func init() {
-	if Bdb == nil {
-		var err error
-		Bdb, err = bolt.Open("lichee.db", 0600, nil)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-	}
-
 	require.RegisterNativeModule("db/bolt", func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 		o.Set("createBucketIfNotExists", func(call js.FunctionCall) js.Value {

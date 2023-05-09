@@ -15,7 +15,7 @@ func (Param) TableName() string {
 
 type ParamArea struct {
 	Id   int64  `json:"id" gorm:"column:id;type:bigint;comment:id;primaryKey"` // id
-	Name string `json:"name" gorm:"column:id;name:varchar(100);comment:域名称"`   // 域名称
+	Name string `json:"name" gorm:"column:name;type:varchar(100);comment:域名称"` // 域名称
 	Mark string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`  // 备注
 }
 
@@ -51,7 +51,8 @@ type ReqCreateArea struct {
 }
 
 type ReqQueryArea struct {
-	Name string `json:"name" form:"name"` // 参数名称
+	Name   string `json:"name" form:"name"`       // 参数名称
+	AreaId int64  `json:"area_id" form:"area_id"` // 参数域ID
 	PageInfo
 }
 
