@@ -33,7 +33,7 @@ func NewFile(runtime *js.Runtime, file *os.File) *js.Object {
 }
 
 func init() {
-	require.RegisterNativeModule("file", func(runtime *js.Runtime, module *js.Object) {
+	require.RegisterNativeModule("std/file", func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 		o.Set("write", func(call js.FunctionCall) js.Value {
 			filename := call.Argument(0).String()

@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	require.RegisterNativeModule("os", func(runtime *js.Runtime, module *js.Object) {
+	require.RegisterNativeModule("std/os", func(runtime *js.Runtime, module *js.Object) {
 		o := module.Get("exports").(*js.Object)
 		o.Set("O_CREATE", os.O_CREATE)
 		o.Set("O_WRONLY", os.O_WRONLY)
