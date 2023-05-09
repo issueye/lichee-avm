@@ -14,6 +14,7 @@ type Config struct {
 	Database string `json:"name"`     // 数据库
 	Port     int    `json:"port"`     // 端口号
 	LogMode  bool   `json:"logMode"`  // 日志模式
+	Path     string `json:"path"`     // sqlite 数据库路径
 }
 
 // Writer 封装的SQL打印

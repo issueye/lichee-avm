@@ -1,15 +1,20 @@
 package model
 
 type DbSource struct {
-	Id       int64  `json:"id"`       // ID
-	Name     string `json:"name"`     // 名称
-	Host     string `json:"host"`     // 地址
-	Port     int64  `json:"port"`     // 端口号
-	Database string `json:"database"` // 数据库
-	User     string `json:"user"`     // 账号
-	Password string `json:"password"` // 密码
-	Type     int64  `json:"type"`     // 类型 0 sqlserver 1 mysql 2 oracle
-	Mark     string `json:"mark"`     // 备注
+	Id       int64  `json:"id" gorm:"column:id;type:bigint;comment:ID;primaryKey"`                                // ID
+	Name     string `json:"name" gorm:"column:name;type:varchar(100);comment:名称"`                                 // 名称
+	Host     string `json:"host" gorm:"column:host;type:varchar(100);comment:地址"`                                 // 地址
+	Port     int64  `json:"port" gorm:"column:port;type:bigint;comment:端口号"`                                      // 端口号
+	Database string `json:"database" gorm:"column:database;type:varchar(50);comment:数据库"`                         // 数据库
+	User     string `json:"user" gorm:"column:user;type:varchar(100);comment:账户"`                                 // 账号
+	Password string `json:"password" gorm:"column:password;type:varchar(100);comment:密码"`                         // 密码
+	Type     int64  `json:"type" gorm:"column:type;type:int;comment:数据库类型 0 sqlserver 1 mysql 2 oracle 3 sqlite"` // 类型 0 sqlserver 1 mysql 2 oracle 3 sqlite
+	Path     string `json:"path" gorm:"column:path;type:varchar(500);comment:数据库路径"`                              // 数据库路径
+	Mark     string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`                                 // 备注
+}
+
+func (DbSource) TableName() string {
+	return "db_source"
 }
 
 // ReqCreateDbSource
@@ -22,6 +27,7 @@ type ReqCreateDbSource struct {
 	User     string `json:"user" binding:"required" label:"账户" example:"sa"`              // 账号
 	Password string `json:"password" binding:"required" label:"密码" example:"123456"`      // 密码
 	Type     int64  `json:"type" label:"数据库类型" example:"0"`                               // 类型
+	Path     string `json:"path" label:"数据库路径 SQLITE时需要" example:"db\test.db"`            // 类型
 	Mark     string `json:"mark"`                                                         // 备注
 }
 
@@ -35,6 +41,7 @@ type ReqModifyDbSource struct {
 	User     string `json:"user" binding:"required" label:"账户" example:"sa"`              // 账号
 	Password string `json:"password" binding:"required" label:"密码" example:"123456"`      // 密码
 	Type     int64  `json:"type" label:"数据库类型" example:"0"`                               // 类型
+	Path     string `json:"path" label:"数据库路径 SQLITE时需要" example:"db\test.db"`            // 类型
 	Mark     string `json:"mark"`                                                         // 备注
 }
 

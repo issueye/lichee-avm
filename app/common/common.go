@@ -119,10 +119,10 @@ func GetDb(cfg *db.Config, t int) (*gorm.DB, error) {
 		err error
 	)
 
+	// 尝试连接
 	switch t {
 	case 0:
 		{
-			// 尝试连接
 			d, err = db.InitSqlServer(cfg, Log)
 			if err != nil {
 				Log.Errorf("数据库连接失败，失败原因：%s", err.Error())
@@ -131,7 +131,6 @@ func GetDb(cfg *db.Config, t int) (*gorm.DB, error) {
 		}
 	case 1:
 		{
-			// 尝试连接
 			d, err = db.InitMysql(cfg, Log)
 			if err != nil {
 				Log.Errorf("数据库连接失败，失败原因：%s", err.Error())
@@ -140,8 +139,15 @@ func GetDb(cfg *db.Config, t int) (*gorm.DB, error) {
 		}
 	case 2:
 		{
-			// 尝试连接
 			d, err = db.InitOracle(cfg, Log)
+			if err != nil {
+				Log.Errorf("数据库连接失败，失败原因：%s", err.Error())
+				return nil, err
+			}
+		}
+	case 3:
+		{
+			d, err = db.InitSqlite(cfg, Log)
 			if err != nil {
 				Log.Errorf("数据库连接失败，失败原因：%s", err.Error())
 				return nil, err
