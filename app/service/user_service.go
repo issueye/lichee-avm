@@ -1,11 +1,10 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
-	"github.com/issueye/lichee/global"
-	"github.com/issueye/lichee/utils"
-	"go.etcd.io/bbolt"
 )
 
 type UserService struct{}
@@ -49,42 +48,22 @@ func (user UserService) GetById(id int64) (*model.User, error) {
 // 写入数据
 func (user UserService) Query(req *model.ReqQueryUser) ([]*model.ResQueryUser, error) {
 	list := make([]*model.User, 0)
-	err := global.Bdb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(common.USER_BUCKET)
-		return b.ForEach(func(k, v []byte) error {
-			data := new(model.User)
 
-			// 用户名
-			if req.Name != "" {
-				err := Find(req.Name, v, data, &list)
-				if err != nil {
-					return err
-				}
+	query := common.LocalDb.Model(&model.User{})
 
-				return nil
-			}
+	if req.Name != "" {
+		query = query.Where("name like ?", fmt.Sprintf("%%%s%%", req.Name))
+	}
 
-			// 登录名
-			if req.Account != "" {
-				err := Find(req.Account, v, data, &list)
-				if err != nil {
-					return err
-				}
+	if req.Account != "" {
+		query = query.Where("account = ?", req.Account)
+	}
 
-				return nil
-			}
+	if req.Mark != "" {
+		query = query.Where("mark like ?", fmt.Sprintf("%%%s%%", req.Mark))
+	}
 
-			err := utils.GobBuff{}.BytesToStruct(v, data)
-			if err != nil {
-				common.Log.Errorf("将字节转换为对象失败，失败原因：%s", err.Error())
-				return err
-			}
-
-			list = append(list, data)
-			return nil
-		})
-	})
-
+	err := query.Find(&list).Error
 	// 数据的条数
 	req.Total = int64(len(list))
 
@@ -97,8 +76,8 @@ func (user UserService) Query(req *model.ReqQueryUser) ([]*model.ResQueryUser, e
 		res.Account = data.Account
 		res.Mark = data.Mark
 		res.Enable = data.Enable
-		res.CreateTime = data.CreateTime.Format(utils.FormatDateTimeMs)
-		res.LoginTime = data.LoginTime.Format(utils.FormatDateTimeMs)
+		res.CreateTime = data.CreateTime
+		res.LoginTime = data.LoginTime
 		resList = append(resList, res)
 	}
 

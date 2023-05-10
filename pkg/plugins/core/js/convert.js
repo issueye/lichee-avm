@@ -1,4 +1,4 @@
-var utils = require('utils')
+var utils = require('std/utils')
 
 utils.arrayToMap = function (key, arr) {
     var data = {};

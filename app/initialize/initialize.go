@@ -12,8 +12,6 @@ func Initialize() {
 	InitLogger()
 	// 初始化数据库
 	InitLocalDb()
-	// 初始化系统操作员
-	InitAdminUser()
 	// 初始化数据库
 	InitDB()
 	// 初始化ws

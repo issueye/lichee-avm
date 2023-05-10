@@ -1,9 +1,10 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
-	"github.com/issueye/lichee/utils"
 )
 
 type JobService struct{}
@@ -14,8 +15,20 @@ func NewJobService() *JobService {
 
 // Save
 // 写入数据
-func (job JobService) Save(data *model.Job) error {
+func (job JobService) Create(data *model.Job) error {
 	return common.LocalDb.Create(data).Error
+}
+
+// Modify
+// 修改数据
+func (job JobService) Modify(data *model.Job) error {
+	return common.LocalDb.Model(&model.Job{}).Where("id = ?", data.Id).Updates(data).Error
+}
+
+// Modify
+// 修改数据
+func (job JobService) ModifyStatus(id int64, status bool) error {
+	return common.LocalDb.Model(&model.Job{}).Where("id = ?", id).Update("enable", status).Error
 }
 
 // Delete
@@ -37,7 +50,12 @@ func (job JobService) GetById(id int64) (*model.Job, error) {
 func (job JobService) Query(req *model.ReqQueryJob) ([]*model.ResQueryJob, error) {
 	list := make([]*model.Job, 0)
 
-	err := common.LocalDb.Model(&model.Job{}).Where(&list).Error
+	query := common.LocalDb.Model(&model.Job{})
+
+	if req.Name != "" {
+		query = query.Where("name like ?", fmt.Sprintf("%%%s%%", req.Name))
+	}
+	err := query.Find(&list).Error
 	// 数据的条数
 	req.Total = int64(len(list))
 
@@ -59,7 +77,7 @@ func (job JobService) Query(req *model.ReqQueryJob) ([]*model.ResQueryJob, error
 		res.Path = data.Path
 		res.AreaId = pa.Id
 		res.Area = pa.Name
-		res.CreateTime = data.CreateTime.Format(utils.FormatDateTimeMs)
+		res.CreateTime = data.CreateTime
 		resList = append(resList, res)
 	}
 
