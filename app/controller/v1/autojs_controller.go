@@ -7,23 +7,22 @@ import (
 
 	"github.com/dop251/goja"
 	"github.com/gin-gonic/gin"
-	"github.com/issueye/lichee/app/common"
-	mhttp "github.com/issueye/lichee/pkg/plugins/core/net/http"
+	licheeJs "github.com/issueye/lichee-js"
 )
 
 type AutoJsController struct {
 	ScriptTimeoutSec int
 }
 
-func (gszyy *AutoJsController) AutoJsReceiveServer(ctx *gin.Context) {
-	rtCore := common.GetInitCore()
-	rt := rtCore.GetRts()
-	rt.Set("response", mhttp.NewResponse(rt, ctx.Writer))
-	rt.Set("request", mhttp.NewRequest(rt, ctx.Request))
+func (autoJs *AutoJsController) AutoJsReceiveServer(ctx *gin.Context) {
+	core := licheeJs.NewCore()
+	vm := core.GetRts()
+	licheeJs.NewRequest(vm, ctx.Request)
+	licheeJs.NewResponse(vm, ctx.Writer)
 
 	normalEndCh := make(chan bool)
 	go func() {
-		err := rtCore.RunVM("index.js", rt)
+		err := vm.Run("AutoJsController", "index.js")
 		if err != nil {
 			switch err := err.(type) {
 			case *goja.Exception:
@@ -48,11 +47,11 @@ func (gszyy *AutoJsController) AutoJsReceiveServer(ctx *gin.Context) {
 		normalEndCh <- true
 	}()
 
-	if gszyy.ScriptTimeoutSec > 0 {
-		timeoutCh := time.After(time.Duration(gszyy.ScriptTimeoutSec) * time.Second)
+	if autoJs.ScriptTimeoutSec > 0 {
+		timeoutCh := time.After(time.Duration(autoJs.ScriptTimeoutSec) * time.Second)
 		select {
 		case <-timeoutCh:
-			rt.Interrupt("run code timeout, halt")
+			vm.Interrupt("run code timeout, halt")
 			ctx.Writer.WriteHeader(http.StatusInternalServerError)
 		case <-normalEndCh:
 		}

@@ -3,11 +3,11 @@ package initialize
 import (
 	"time"
 
+	licheeJs "github.com/issueye/lichee-js"
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/app/service"
 	"github.com/issueye/lichee/global"
-	"github.com/issueye/lichee/pkg/plugins/core"
 	"github.com/spf13/cast"
 )
 
@@ -19,8 +19,8 @@ type TaskJob struct {
 }
 
 func (t TaskJob) Run() {
-	vm := common.GetInitCore()
-
+	core := licheeJs.NewCore()
+	vm := core.GetRts()
 	// 注入系统参数
 	err := regParam(common.SYS_AREA, vm)
 	if err != nil {
@@ -42,7 +42,7 @@ func (t TaskJob) Run() {
 	}
 }
 
-func regParam(id int64, vm *core.Core) error {
+func regParam(id int64, vm *licheeJs.Core) error {
 	pa, err := service.NewParamService().GetAreaById(id)
 	if err != nil {
 		common.Log.Errorf("查询参数域失败，失败原因：%s", err.Error())
@@ -118,10 +118,10 @@ func Monitor() {
 						global.JobTask.Remove(cast.ToString(job.Id))
 						common.Log.Debugf("定时任务【%s-%d】删除成功", job.Name, job.Id)
 						// 移除日志对象
-						zl, ok := core.LogMap[job.Name]
+						zl, ok := licheeJs.LogMap[job.Name]
 						if ok {
 							zl.Close()
-							delete(core.LogMap, job.Name)
+							delete(licheeJs.LogMap, job.Name)
 						}
 					}
 				case common.JOB_MODIFY: // 修改定时任务  先移除任务 再添加定时任务

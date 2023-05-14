@@ -7,7 +7,6 @@ import (
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/pkg/db"
-	"github.com/issueye/lichee/pkg/plugins/core"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -79,13 +78,6 @@ func JobGo(j model.Job, t JOB_TYPE) {
 		},
 		Type: t,
 	}
-}
-
-// GetInitCore
-// 初始化JS插件内容
-func GetInitCore() *core.Core {
-	vm := core.NewCore(core.OptionLog(Logger))
-	return vm
 }
 
 func GetDb(cfg *db.Config, t int) (*gorm.DB, error) {

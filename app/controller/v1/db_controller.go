@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	licheeJs "github.com/issueye/lichee-js"
 	"github.com/issueye/lichee/app/common"
 	"github.com/issueye/lichee/app/model"
 	"github.com/issueye/lichee/app/service"
 	"github.com/issueye/lichee/global"
 	"github.com/issueye/lichee/pkg/db"
-	licheeDB "github.com/issueye/lichee/pkg/plugins/core/db"
 	"github.com/issueye/lichee/pkg/res"
 	"github.com/issueye/lichee/utils"
 	"github.com/spf13/cast"
@@ -80,7 +80,7 @@ func (control *DbController) Create(ctx *gin.Context) {
 	}
 
 	// 将数据库注册到JS虚拟机
-	licheeDB.RegisterDB(fmt.Sprintf("db/%s", info.Name), info.DB)
+	licheeJs.RegisterDB(fmt.Sprintf("db/%s", info.Name), info.DB)
 	global.GdbMap[ds.Name] = info
 
 	res.SuccessByMsg(ctx, "添加数据库源成功")
