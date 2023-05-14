@@ -1,16 +1,17 @@
 package model
 
 type DbSource struct {
-	Id       int64  `json:"id" gorm:"column:id;type:bigint;comment:ID;primaryKey"`                                // ID
-	Name     string `json:"name" gorm:"column:name;type:varchar(100);comment:名称"`                                 // 名称
-	Host     string `json:"host" gorm:"column:host;type:varchar(100);comment:地址"`                                 // 地址
-	Port     int64  `json:"port" gorm:"column:port;type:bigint;comment:端口号"`                                      // 端口号
-	Database string `json:"database" gorm:"column:database;type:varchar(50);comment:数据库"`                         // 数据库
-	User     string `json:"user" gorm:"column:user;type:varchar(100);comment:账户"`                                 // 账号
-	Password string `json:"password" gorm:"column:password;type:varchar(100);comment:密码"`                         // 密码
-	Type     int64  `json:"type" gorm:"column:type;type:int;comment:数据库类型 0 sqlserver 1 mysql 2 oracle 3 sqlite"` // 类型 0 sqlserver 1 mysql 2 oracle 3 sqlite
-	Path     string `json:"path" gorm:"column:path;type:varchar(500);comment:数据库路径"`                              // 数据库路径
-	Mark     string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`                                 // 备注
+	Id         int64  `json:"id" gorm:"column:id;type:bigint;comment:ID;primaryKey"`                                // ID
+	Name       string `json:"name" gorm:"column:name;type:varchar(100);comment:名称"`                                 // 名称
+	Host       string `json:"host" gorm:"column:host;type:varchar(100);comment:地址"`                                 // 地址
+	Port       int64  `json:"port" gorm:"column:port;type:bigint;comment:端口号"`                                      // 端口号
+	Database   string `json:"database" gorm:"column:database;type:varchar(50);comment:数据库"`                         // 数据库
+	User       string `json:"user" gorm:"column:user;type:varchar(100);comment:账户"`                                 // 账号
+	Password   string `json:"password" gorm:"column:password;type:varchar(100);comment:密码"`                         // 密码
+	Type       int64  `json:"type" gorm:"column:type;type:int;comment:数据库类型 0 sqlserver 1 mysql 2 oracle 3 sqlite"` // 类型 0 sqlserver 1 mysql 2 oracle 3 sqlite
+	Path       string `json:"path" gorm:"column:path;type:varchar(500);comment:数据库路径"`                              // 数据库路径
+	Mark       string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`                                 // 备注
+	CreateTime string `json:"create_time" gorm:"column:create_time;type:varchar(100);comment:创建时间"`                 // 创建时间
 }
 
 func (DbSource) TableName() string {

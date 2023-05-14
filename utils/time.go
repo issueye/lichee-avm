@@ -211,7 +211,7 @@ func NowLocalDate() LocalDate {
 
 // 返回当前时间字符串
 func NowlocalDatetimeStr() string {
-	return GetTimeFormat(time.Now().Format(FormatDateTimeMs))
+	return GetTimeFormat(FormatDateTimeMs)
 }
 
 // NowLocalDatePtr NowLocalDate 获取当前自定义格式日期

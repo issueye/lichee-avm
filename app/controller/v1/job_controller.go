@@ -2,7 +2,6 @@ package v1
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/issueye/lichee/app/common"
@@ -46,9 +45,9 @@ func (job *JobController) Create(ctx *gin.Context) {
 	data.Mark = req.Mark
 	data.Path = req.Path
 	data.AreaId = req.AreaId // 参数域
-	data.CreateTime = time.Now()
+	data.CreateTime = utils.Ltime{}.GetNowStr()
 
-	err = service.NewJobService().Save(data)
+	err = service.NewJobService().Create(data)
 	if err != nil {
 		common.Log.Errorf("创建定时任务失败，失败原因：%s", err.Error())
 		res.FailByMsg(ctx, "创建定时任务失败")
@@ -167,7 +166,7 @@ func (job *JobController) Modify(ctx *gin.Context) {
 	j.AreaId = req.AreaId
 
 	// 保存定时任务信息
-	err = service.NewJobService().Save(j)
+	err = service.NewJobService().Modify(j)
 	if err != nil {
 		common.Log.Errorf("修改定时任务失败，失败原因：%s", err.Error())
 		res.FailByMsg(ctx, "修改定时任务失败")
@@ -243,7 +242,7 @@ func (job *JobController) ModifyStatus(ctx *gin.Context) {
 	j.Enable = status
 
 	// 保存定时任务信息
-	err = service.NewJobService().Save(j)
+	err = service.NewJobService().ModifyStatus(j.Id, j.Enable)
 	if err != nil {
 		common.Log.Errorf("修改定时任务失败，失败原因：%s", err.Error())
 		res.FailByMsg(ctx, "修改定时任务失败")

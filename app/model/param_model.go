@@ -1,12 +1,13 @@
 package model
 
 type Param struct {
-	Id     int64  `json:"id" gorm:"column:id;type:bigint;comment:用户ID;primaryKey"` // id
-	Name   string `json:"name" gorm:"column:name;type:varchar(100);comment:参数名称"`  // 参数名称
-	AreaId int64  `json:"area_id" gorm:"column:area_id;type:bigint;comment:参数域id"` // 参数域id
-	Area   string `json:"area" gorm:"column:area;type:varchar(100);comment:参数域"`   // 参数域
-	Value  string `json:"value" gorm:"column:value;type:varchar(500);comment:参数值"` // 参数值
-	Mark   string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`    // 备注
+	Id         int64  `json:"id" gorm:"column:id;type:bigint;comment:用户ID;primaryKey"`              // id
+	Name       string `json:"name" gorm:"column:name;type:varchar(100);comment:参数名称"`               // 参数名称
+	AreaId     int64  `json:"area_id" gorm:"column:area_id;type:bigint;comment:参数域id"`              // 参数域id
+	Area       string `json:"area" gorm:"column:area;type:varchar(100);comment:参数域"`                // 参数域
+	Value      string `json:"value" gorm:"column:value;type:varchar(500);comment:参数值"`              // 参数值
+	Mark       string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`                 // 备注
+	CreateTime string `json:"create_time" gorm:"column:create_time;type:varchar(100);comment:创建时间"` // 创建时间
 }
 
 func (Param) TableName() string {
@@ -14,9 +15,10 @@ func (Param) TableName() string {
 }
 
 type ParamArea struct {
-	Id   int64  `json:"id" gorm:"column:id;type:bigint;comment:id;primaryKey"` // id
-	Name string `json:"name" gorm:"column:name;type:varchar(100);comment:域名称"` // 域名称
-	Mark string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`  // 备注
+	Id         int64  `json:"id" gorm:"column:id;type:bigint;comment:id;primaryKey"`                // id
+	Name       string `json:"name" gorm:"column:name;type:varchar(100);comment:域名称"`                // 域名称
+	Mark       string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`                 // 备注
+	CreateTime string `json:"create_time" gorm:"column:create_time;type:varchar(100);comment:创建时间"` // 创建时间
 }
 
 func (ParamArea) TableName() string {

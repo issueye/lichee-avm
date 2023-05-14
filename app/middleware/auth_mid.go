@@ -85,7 +85,7 @@ func (auth *Auth) Login(c *gin.Context) (interface{}, error) {
 	}
 
 	// 修改用户登录时间
-	user.LoginTime = time.Now()
+	user.LoginTime = utils.Ltime{}.GetNowStr()
 	err = service.NewUserService().Modify(user)
 	if err != nil {
 		return nil, err

@@ -2,7 +2,6 @@ package initialize
 
 import (
 	"fmt"
-	"time"
 
 	licheeJs "github.com/issueye/lichee-js"
 	"github.com/issueye/lichee/app/common"
@@ -72,6 +71,9 @@ func InitLocalDb() {
 		&model.User{},
 	)
 	fmt.Printf("【%s】初始化库表完成...\n", utils.Ltime{}.GetNowStr())
+
+	InitAdminUser()
+	InitSysArea()
 }
 
 func InitAdminUser() {
@@ -89,11 +91,33 @@ func InitAdminUser() {
 			Password:   "",
 			Mark:       "系统生成的管理员账号",
 			Enable:     1,
-			CreateTime: time.Now(),
+			CreateTime: utils.Ltime{}.GetNowStr(),
 		})
 
 		if err != nil {
 			fmt.Printf("生成管理员信息失败，失败原因：%s\n", err.Error())
+			return
+		}
+	}
+}
+
+func InitSysArea() {
+	pa, err := service.NewParamService().GetAreaById(10000)
+	if err != nil {
+		fmt.Printf("查询参数域失败，失败原因：%s", err.Error())
+		return
+	}
+
+	if pa.Id == 0 {
+		service.NewParamService().CreateArea(&model.ParamArea{
+			Id:         10000,
+			Name:       "sys",
+			Mark:       "系统参数域",
+			CreateTime: utils.Ltime{}.GetNowStr(),
+		})
+
+		if err != nil {
+			fmt.Printf("生成系统参数域失败，失败原因：%s\n", err.Error())
 			return
 		}
 	}

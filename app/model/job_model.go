@@ -1,18 +1,14 @@
 package model
 
-import (
-	"time"
-)
-
 type Job struct {
-	Id         int64     `json:"id" gorm:"column:id;type:bigint;comment:任务ID;primaryKey;"`            // 任务ID
-	Name       string    `json:"name" gorm:"column:name;type:varchar(200);comment:任务名称"`              // 名称
-	Expr       string    `json:"expr" gorm:"column:expr;type:varchar(150);comment:时间表达式"`             // 时间表达式
-	Mark       string    `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`                // 备注
-	Enable     bool      `json:"enable" gorm:"column:enable;type:int;comment:启用"`                     // 状态
-	Path       string    `json:"path" gorm:"column:path;type:varchar(300);comment:脚本路径"`              // 脚本路径
-	AreaId     int64     `json:"area_id" gorm:"column:area_id;type:bigint;comment:参数域ID"`             // 参数域ID
-	CreateTime time.Time `json:"create_time" gorm:"column:create_time;type:varchar(50);comment:创建时间"` // 创建时间
+	Id         int64  `json:"id" gorm:"column:id;type:bigint;comment:任务ID;primaryKey;"`             // 任务ID
+	Name       string `json:"name" gorm:"column:name;type:varchar(200);comment:任务名称"`               // 名称
+	Expr       string `json:"expr" gorm:"column:expr;type:varchar(150);comment:时间表达式"`              // 时间表达式
+	Mark       string `json:"mark" gorm:"column:mark;type:varchar(500);comment:备注"`                 // 备注
+	Enable     bool   `json:"enable" gorm:"column:enable;type:int;comment:启用"`                      // 状态
+	Path       string `json:"path" gorm:"column:path;type:varchar(300);comment:脚本路径"`               // 脚本路径
+	AreaId     int64  `json:"area_id" gorm:"column:area_id;type:bigint;comment:参数域ID"`              // 参数域ID
+	CreateTime string `json:"create_time" gorm:"column:create_time;type:varchar(100);comment:创建时间"` // 创建时间
 }
 
 func (Job) TableName() string {

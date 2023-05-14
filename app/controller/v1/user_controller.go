@@ -2,7 +2,6 @@ package v1
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/issueye/lichee/app/common"
@@ -45,7 +44,7 @@ func (user *UserController) Create(ctx *gin.Context) {
 	data.Password = req.Password
 	data.Enable = 0
 	data.Mark = req.Mark
-	data.CreateTime = time.Now()
+	data.CreateTime = utils.Ltime{}.GetNowStr()
 
 	err = service.NewUserService().Create(data)
 	if err != nil {
