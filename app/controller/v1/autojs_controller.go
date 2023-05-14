@@ -22,13 +22,13 @@ func (autoJs *AutoJsController) AutoJsReceiveServer(ctx *gin.Context) {
 
 	normalEndCh := make(chan bool)
 	go func() {
-		err := vm.Run("AutoJsController", "index.js")
+		err := core.Run("AutoJsController", "index.js")
 		if err != nil {
 			switch err := err.(type) {
 			case *goja.Exception:
 				ctx.Writer.WriteHeader(http.StatusInternalServerError)
 				fmt.Println("*goja.Exception:", err.String())
-				if v := err.Value().ToObject(rt).Get("nativeType"); v != nil {
+				if v := err.Value().ToObject(vm).Get("nativeType"); v != nil {
 					fmt.Printf("%T:%[1]v\n", v.Export())
 				}
 			case *goja.InterruptedError:

@@ -22,3 +22,6 @@ runtime/js/juejin/hot_fish.js
 runtime/js/orange/task.js
 runtime/js/test_*.js
 log
+cmd/log
+cmd/*.db
+cmd/tmp

@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -33,10 +34,9 @@ type Config struct {
  * 由于zap不具备日志切割功能, 这里使用lumberjack配合
  */
 func InitLogger(cfg *Config) (*zap.SugaredLogger, *zap.Logger) {
-	now := time.Now()
 	LogsPath := cfg.Path
-	infoLogFileName := fmt.Sprintf("%s/info/%04d-%02d-%02d.log", LogsPath, now.Year(), now.Month(), now.Day())
-	errorLogFileName := fmt.Sprintf("%s/error/%04d-%02d-%02d.log", LogsPath, now.Year(), now.Month(), now.Day())
+	infoLogFileName := filepath.Join(LogsPath, "info", "lichee.log")
+	errorLogFileName := filepath.Join(LogsPath, "error", "lichee.log")
 	var coreArr []zapcore.Core
 
 	// 获取编码器

@@ -19,23 +19,24 @@ type TaskJob struct {
 }
 
 func (t TaskJob) Run() {
-	core := licheeJs.NewCore()
-	vm := core.GetRts()
+	core := licheeJs.NewCore(licheeJs.OptionLog("log", common.Logger))
+	// 在控制台输出日志
+	core.SetLogOutMode(licheeJs.LOM_DEBUG)
 	// 注入系统参数
-	err := regParam(common.SYS_AREA, vm)
+	err := regParam(common.SYS_AREA, core)
 	if err != nil {
 		common.Log.Errorf("系统参数注入失败，失败原因：%s", err.Error())
 		return
 	}
 
 	// 注入脚本对应的参数域
-	err = regParam(t.AreaId, vm)
+	err = regParam(t.AreaId, core)
 	if err != nil {
 		common.Log.Errorf("参数注入失败，失败原因：%s", err.Error())
 		return
 	}
 
-	err = vm.Run(t.Name, t.Path)
+	err = core.Run(t.Name, t.Path)
 	if err != nil {
 		common.Log.Errorf("运行脚本【%s】失败，失败原因：%s", t.Path, err.Error())
 		return

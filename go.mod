@@ -17,7 +17,7 @@ require (
 	github.com/golang-module/carbon/v2 v2.2.3
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
-	github.com/issueye/lichee-js v0.0.0-20230514104445-572f49400ad0
+	github.com/issueye/lichee-js v0.0.0-20230514120103-b9aa7da4f057
 	github.com/issueye/tail v0.0.0-20230322075002-2ce4fa41a19b
 	github.com/juju/ratelimit v1.0.2
 	github.com/mattn/go-colorable v0.1.13
@@ -29,7 +29,6 @@ require (
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.8.12
 	github.com/tidwall/gjson v1.14.3
-	go.etcd.io/bbolt v1.3.7
 	go.uber.org/zap v1.24.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/mysql v1.4.7
@@ -87,6 +86,7 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.9 // indirect
+	go.etcd.io/bbolt v1.3.7 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect

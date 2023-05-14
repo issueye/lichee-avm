@@ -16,8 +16,6 @@ func Initialize() {
 	InitDB()
 	// 初始化ws
 	ws.RunWs(common.Log)
-	// 初始化JS虚拟机
-	InitPlugins()
 	// 初始化定时任务
 	InitTaskJob()
 	// 初始化http服务
